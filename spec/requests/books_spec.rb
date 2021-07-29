@@ -13,8 +13,8 @@ describe 'Books API', type: :request do
       get '/api/v1/books'
 
       expect(response).to have_http_status(:success)
-      expect(JSON.parse(response.body).size).to eq(2)
-      expect(JSON.parse(response.body)).to eq(
+      expect(response_body.size).to eq(2)
+      expect(response_body).to eq(
         [
           {
             'id' => 1,
@@ -22,6 +22,40 @@ describe 'Books API', type: :request do
             'author_name' => 'Jester Wiggins',
             'author_age' => 32
           },
+          {
+            'id' => 2,
+            'title' => 'title2',
+            'author_name' => 'Jester Wiggins',
+            'author_age' => 32
+          }
+        ]
+      )
+    end
+
+    it 'should return subset of books based on limit' do
+      get '/api/v1/books', params: { limit: 1 }
+
+      expect(response).to have_http_status(:success)
+      expect(response_body.size).to eq(1)
+      expect(response_body).to eq(
+        [
+          {
+            'id' => 1,
+            'title' => 'title1',
+            'author_name' => 'Jester Wiggins',
+            'author_age' => 32
+          }
+        ]
+      )
+    end
+
+    it 'should return subset of books based on limit and offset' do
+      get '/api/v1/books', params: { limit: 1, offset: 1 }
+
+      expect(response).to have_http_status(:success)
+      expect(response_body.size).to eq(1)
+      expect(response_body).to eq(
+        [
           {
             'id' => 2,
             'title' => 'title2',
@@ -44,7 +78,7 @@ describe 'Books API', type: :request do
 
       expect(response).to have_http_status(:created)
       expect(Author.count).to eq(1)
-      expect(JSON.parse(response.body)).to eq(
+      expect(response_body).to eq(
         {
           'id' => 1,
           'title' => 'The Martian',
