@@ -2,8 +2,9 @@ require 'rails_helper'
 
 describe 'Books API', type: :request do
   describe 'POST /authenticate' do
+    let(:user) { FactoryBot.create(:user, username: 'BookSeller') }
     it 'authenticates the client' do
-      post '/api/v1/authenticate/', params: { username: 'BookSeller', password: 'asd654' }
+      post '/api/v1/authenticate/', params: { username: user.username, password: 'asd654' }
 
       expect(response).to have_http_status(:created)
       expect(response_body).to eq(
